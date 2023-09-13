@@ -16,7 +16,7 @@ SQlite3 database but simplified with easy methods and TypeScript support!
 
 ## Installation
 ```sh-session
-npm install @tfadev/discord.js-docs axios
+npm install @tfadev/easy-sqlite
 ```
 
 ## Usage
