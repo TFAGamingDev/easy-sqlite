@@ -8,9 +8,20 @@
     "test": "tsc && node .",
     "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "sqlite",
+    "sqlite3",
+    "simple",
+    "database",
+    "db",
+    "simple database",
+    "simple db",
+    "easy",
+    "easy db",
+    "sql"
+  ],
+  "author": "TFAGaming",
+  "license": "GPL-3.0",
   "repository": {
     "url": "https://github.com/TFAGamingDev/easy-sqlite.git"
   },
