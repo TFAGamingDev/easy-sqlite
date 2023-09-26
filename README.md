@@ -26,10 +26,10 @@ Create a new database using the class `SQLiteDatabase`:
 ```ts
 import { SQLiteDatabase } from '@tfadev/easy-sqlite';
 
-const db = new SQLiteDatabase('path/to/your/sql/file.db');
+const db = new SQLiteDatabase('path/to/your/file.db');
 ```
 
-Here are the available methods to use.
+Here are the available methods to use with `SQLiteDatabase` class.
 
 > **Note**
 > Every key is required (**NOT NULL**), you can make one or some of them optional by adding `{ nullable: true }`.
@@ -37,31 +37,26 @@ Here are the available methods to use.
 ```ts
 // Creates a new table:
 await db.create({
-    {
-        name: 'users',
-        overwrite: true, // IF EXISTS
-        keys: {
-            id: ['INTEGER', {
-                primary: true, // PRIMARY KEY
-                autoincrement: true // AUTOINCREMENT
-            }],
-            username: ['TEXT'],
-            age: ['INTEGER'],
-            alive: ['BOOLEAN', {
+    name: 'users',
+    overwrite: true, // IF EXISTS
+    keys: {
+        id: ['INTEGER', {
+            primary: true, // PRIMARY KEY
+            autoincrement: true // AUTOINCREMENT
+        }],
+        username: ['TEXT'],
+        age: ['INTEGER'],
+        alive: ['BOOLEAN', {
                 nullable: true
-            }],
-            languages: ['ARRAY']
-        }
+        }],
+        languages: ['ARRAY']
     }
 });
 
-// Deletes a table:
-await db.drop('users', ...);
-
 // Insert a new row in a table:
 await db.insert('users', {
-    username: 'T.F.A',
-    age: 17,
+    username: 'John',
+    age: 35,
     alive: true,
     languages: ['Python', 'Typescript', 'C++']
 });
@@ -69,37 +64,43 @@ await db.insert('users', {
 // Select from a table:
 await db.select('users'); // → [{ ... }]
 
-await db.select('users', { username: 'T.F.A' }); // → [{ ... }]
-await db.select('users', { age: 17 }); // → [{ ... }]
-await db.select('users', { username: 'T.F.A', age: 19 }); // → []
+await db.select('users', { username: 'John' }); // → [{ ... }]
+await db.select('users', { age: 35 }); // → [{ ... }]
+await db.select('users', { username: 'John', age: 40 }); // → []
 
-// Ensure if a table exist or not:
+// Ensure if a table exist or not, or by using filter:
 await db.ensure('users'); // → true
 
-await db.ensure('users', { username: 'T.F.A' }); // → true
-await db.ensure('users', { age: 17 }); // → true
-await db.ensure('users', { username: 'T.F.A', age: 19 }); // → false
+await db.ensure('users', { username: 'John' }); // → true
+await db.ensure('users', { age: 35 }); // → true
+await db.ensure('users', { username: 'John', age: 40 });// → false
 
 // Deletes a row from a table:
-await db.delete('users', { username: 'T.F.A' });
+await db.delete('users', { username: 'John' });
+
+// Deletes a table:
+await db.drop('users');
+
+// Close the database:
+await db.close();
 ```
 
 ## Typings
 
-The class has a type parameter, it serves for the typings of each method, here is an example:
+The class has a type parameter with type of array, you can include many schemas as you want, just make sure the types are correct and equal to created tables.
 
 ```ts
-type Schema = {
+type UsersSchema = {
     name: 'users',
     keys: {
         username: string,
         age: number,
-        alive?: boolean,
+        alive?: boolean, // ← Nullable
         languages: string[]
     }
 };
 
-const db = new SQLiteDatabase<Schema>(...);
+new SQLiteDatabase<[UsersSchema, ...]>(...);
 ```
 
 ## License

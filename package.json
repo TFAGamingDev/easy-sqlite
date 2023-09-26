@@ -1,6 +1,6 @@
 {
   "name": "@tfadev/easy-sqlite",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "SQlite3 database but simplified with easy methods and TypeScript support!",
   "main": "lib/index.js",
   "typings": "typings/index.d.ts",
