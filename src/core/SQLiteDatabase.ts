@@ -97,7 +97,7 @@ export class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
         const newValues: any[] = [];
 
         for (const value of values) {
-            if (typeof value === 'string' && (value === 'boolean-true' || 'boolean-false')) throw new Error('The method is not allowed.');
+            if (typeof value === 'string' && (value === 'boolean-true' || value === 'boolean-false')) throw new Error('The method is not allowed.');
 
             if (typeof value === 'boolean') {
                 newValues.push(`${value ? 'boolean-true' : 'boolean-false'}`);
