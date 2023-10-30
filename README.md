@@ -6,10 +6,10 @@
     <img src="https://img.shields.io/npm/dt/@tfadev/easy-sqlite.svg?maxAge=3600&label=Downloads">
 </p>
 
-SQlite3 database but simplified with easy methods and TypeScript support!
+SQlite3 database but simplified with easy methods, with TypeScript support!
 
 ## Features
-- Supports string arrays only (other types aren't supported yet).
+- Supports arrays (string arras only).
 - Supports boolean values.
 - Simple and easy to use.
 - Poweful typings.
@@ -35,21 +35,23 @@ Here are the available methods to use with `SQLiteDatabase` class.
 > Every key is required (**NOT NULL**), you can make one or some of them optional by adding `{ nullable: true }`.
 
 ```ts
+import { TableType } from '@tfadev/easy-sqlite';
+
 // Creates a new table:
 await db.create({
     name: 'users',
     overwrite: true, // IF EXISTS
     keys: {
-        id: ['INTEGER', {
+        id: [TableType.Integer, {
             primary: true, // PRIMARY KEY
             autoincrement: true // AUTOINCREMENT
         }],
-        username: ['TEXT'],
-        age: ['INTEGER'],
-        alive: ['BOOLEAN', {
+        username: [TableType.String],
+        age: [TableType.Integer],
+        alive: [TableType.Boolean, {
                 nullable: true
         }],
-        languages: ['ARRAY']
+        languages: [TableType.Array]
     }
 });
 
@@ -61,19 +63,17 @@ await db.insert('users', {
     languages: ['Python', 'Typescript', 'C++']
 });
 
-// Select from a table:
-await db.select('users'); // → [{ ... }]
+// Select from a table, in an array output:
+await db.select('users');
+await db.select('users', { username: 'John' });
 
-await db.select('users', { username: 'John' }); // → [{ ... }]
-await db.select('users', { age: 35 }); // → [{ ... }]
-await db.select('users', { username: 'John', age: 40 }); // → []
+// Select from a table, in single output:
+await db.selectFirst('users');
+await db.selectFirst('users', { username: 'John' });
 
-// Ensure if a table exist or not, or by using filter:
-await db.ensure('users'); // → true
-
-await db.ensure('users', { username: 'John' }); // → true
-await db.ensure('users', { age: 35 }); // → true
-await db.ensure('users', { username: 'John', age: 40 });// → false
+// Ensure if it exists or not:
+await db.ensure('users');
+await db.ensure('users', { username: 'John' });
 
 // Deletes a row from a table:
 await db.delete('users', { username: 'John' });

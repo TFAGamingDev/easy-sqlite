@@ -6,7 +6,7 @@ sqlite3.verbose();
 const splitterChar = `\\/?!*^$£µ&@|øÎ▒ÿ`;
 
 export class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
-    public path?: string;
+    public path: string;
     private readonly db: sqlite3.Database;
 
     constructor(path: `${string}.db`) {
@@ -35,6 +35,7 @@ export class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
             };
 
             if (primaryKeysCount <= 0) throw new Error('Required at least one primary column.');
+            if (primaryKeysCount > 1) throw new Error('More than one primary key provided.');
 
             const code = `CREATE TABLE ${table.overwrite ? 'IF NOT EXISTS' : ''} ${table.name}(${arr.join(', ')})`
                 .replace(/BOOLEAN|ARRAY/g, 'TEXT');
@@ -141,7 +142,7 @@ export class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
         });
     };
 
-    public select<N extends T[number]['name']>(name: N, where?: Partial<Extract<T[number], { name: N }>['keys']>): Promise<{ [key: string]: DefaultValueType }[]> {
+    public select<N extends T[number]['name']>(name: N, where?: Partial<Extract<T[number], { name: N }>['keys']>): Promise<Extract<T[number], { name: N }>['keys'][]> {
         const arr = [];
 
         if (where) {
@@ -190,6 +191,16 @@ export class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
 
                 res(newRows);
             });
+        });
+    };
+
+    public selectFirst<N extends T[number]['name']>(name: N, where?: Partial<Extract<T[number], { name: N }>['keys']>): Promise<Extract<T[number], { name: N }>['keys'] | null> {
+        return new Promise((res, rej) => {
+            this.select(name, where)
+                .then((arr) => {
+                    arr.length <= 0 ? res(null) : res(arr[0]);
+                })
+                .catch(rej)
         });
     };
 

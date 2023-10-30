@@ -1,6 +1,6 @@
-import { DefaultValueType, TableStructureSQLiteTypes, TableStructureDefaultTypes } from '../types';
+import { TableStructureSQLiteTypes, TableStructureDefaultTypes } from '../types';
 export declare class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []> {
-    path?: string;
+    path: string;
     private readonly db;
     constructor(path: `${string}.db`);
     create(...tables: TableStructureSQLiteTypes[]): Promise<this>;
@@ -16,8 +16,13 @@ export declare class SQLiteDatabase<T extends TableStructureDefaultTypes[] = []>
     }>['keys']>): Promise<this>;
     select<N extends T[number]['name']>(name: N, where?: Partial<Extract<T[number], {
         name: N;
-    }>['keys']>): Promise<{
-        [key: string]: DefaultValueType;
-    }[]>;
+    }>['keys']>): Promise<Extract<T[number], {
+        name: N;
+    }>['keys'][]>;
+    selectFirst<N extends T[number]['name']>(name: N, where?: Partial<Extract<T[number], {
+        name: N;
+    }>['keys']>): Promise<Extract<T[number], {
+        name: N;
+    }>['keys'] | null>;
     close(): Promise<this>;
 }
